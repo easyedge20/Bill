@@ -321,16 +321,13 @@
       if (error) throw error; await updateSession(data.session);
     } catch (e) { setText('authStatus', e.message); }
   });
-  $('signUpBtn').addEventListener('click', async () => {
-    try {
-      if (!supabase) throw new Error('Click Connect first.');
-      if ($('password').value.length < 8) throw new Error('Use a password with at least 8 characters.');
-      const { data, error } = await supabase.auth.signUp({ email: $('email').value.trim(), password: $('password').value });
-      if (error) throw error;
-      setText('authStatus', data.session ? 'Account created and signed in.' : 'Account created. Check your email to confirm it, then sign in.');
-      if (data.session) await updateSession(data.session);
-    } catch (e) { setText('authStatus', e.message); }
-  });
+  const { data, error } = await supabaseClient.auth.signUp({
+  email: email,
+  password: password,
+  options: {
+    emailRedirectTo: "https://easyedge20.github.io/Bill/"
+  }
+});
   $('signOutBtn').addEventListener('click', async () => {
     try { const { error } = await supabase.auth.signOut(); if (error) throw error; await updateSession(null); }
     catch (e) { setText('authStatus', e.message); }
